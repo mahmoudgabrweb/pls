@@ -34,6 +34,10 @@
 
         <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
 
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+        @yield('css')
+
         <link rel="stylesheet" href="{{ asset("assets/dist/css/custom.css") }}" />
     </head>
     <body class="hold-transition sidebar-mini layout-fixed">

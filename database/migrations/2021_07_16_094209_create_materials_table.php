@@ -19,7 +19,7 @@ class CreateMaterialsTable extends Migration
             $table->string("name_ar");
             $table->text("address_en");
             $table->text("address_ar");
-            $table->integer("country_code");
+            $table->string("country_code");
             $table->string("price");
             $table->string("image");
             $table->boolean("is_active")->default(false);

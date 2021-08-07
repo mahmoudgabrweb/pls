@@ -23,7 +23,7 @@ class CreateSuppliesTable extends Migration
             $table->string("image");
             $table->text("description_en");
             $table->text("description_ar");
-            $table->integer("country_code");
+            $table->string("country_code");
             $table->string("production_date");
             $table->string("machine_power");
             $table->boolean("type")->default(true)->comment("1 for new, 0 for used");

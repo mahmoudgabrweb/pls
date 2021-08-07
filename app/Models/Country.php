@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class Country extends Model
 {
     use HasFactory;
-
-    protected $fillable = ["image", "reference_type", "reference_id"];
 }

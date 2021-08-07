@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use App\Models\Material;
 use App\Models\Rcategory;
 use App\Models\Type;
@@ -38,9 +39,13 @@ class MaterialController extends Controller
                 return "<img width='40' height='40' src='$image' />";
             })
             ->addColumn("actions", function ($record) {
+                $gallery_link = route("materials.gallery", [$record->id]);
                 $edit_link = route("materials.edit", [$record->id]);
                 $delete_link = route("materials.destroy", [$record->id]);
-                $actions = "<a href='$edit_link' class='badge bg-warning'>تعديل</a>";
+                $view_link = route("materials.show", [$record->id]);
+                $actions = "<a href='$gallery_link' class='badge bg-success'>المعرض</a> ";
+                $actions .= "<a href='$view_link' class='badge bg-info'>عرض</a> ";
+                $actions .= "<a href='$edit_link' class='badge bg-warning'>تعديل</a>";
                 $actions .= " <a href='$delete_link' class='badge bg-danger delete-record'>حذف</a>";
                 return $actions;
             })
@@ -98,9 +103,38 @@ class MaterialController extends Controller
             "rcategory_id" => $request->rcategory_id,
             "type_id" => $request->type_id,
             "country_code" => $request->country_code,
+            "available_amount" => $request->available_amount,
         ]);
 
         return redirect(route("materials.index"))->with("success_message", "Material has been stored successfully.");
+    }
+
+    public function show(Material $material)
+    {
+        $material = $material->with("rcategory", "country", "user", "type")->first();
+        return view("admin.materials.show", compact("material"));
+    }
+
+    public function gallery(Material $material)
+    {
+        return view("admin.materials.gallery", compact("material"));
+    }
+
+    public function addGallery(Request $request, Material $material)
+    {
+        $this->validate($request, [
+            "image" => "required",
+        ]);
+
+        $image = $request->file("image")->store("gallery");
+
+        Gallery::create([
+            "image" => $image,
+            "reference_type" => "App\Models\Material",
+            "reference_id" => $material->id
+        ]);
+
+        return redirect(url("admin/materials/$material->id/gallery"));
     }
 
     /**
@@ -114,7 +148,7 @@ class MaterialController extends Controller
         $types = Type::pluck("name_ar", "id")->toArray();
         $categories = Rcategory::pluck("name_ar", "id")->toArray();
         $countries = \DB::table("countries")->pluck("name_ar", "code")->toArray();
-        return view("admin.materials.edit", compact("machine", "types", "categories", "countries"));
+        return view("admin.materials.edit", compact("material", "types", "categories", "countries"));
     }
 
     /**
@@ -151,6 +185,7 @@ class MaterialController extends Controller
             "rcategory_id" => $request->rcategory_id,
             "type_id" => $request->type_id,
             "country_code" => $request->country_code,
+            "available_amount" => $request->available_amount,
         ];
 
         if ($request->image) {

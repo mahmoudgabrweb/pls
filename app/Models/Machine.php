@@ -18,4 +18,9 @@ class Machine extends Model
     {
         return $this->belongsTo(Mcategory::class);
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, "country_code", "code");
+    }
 }

@@ -54,6 +54,8 @@ Route::group(['prefix' => "admin", "namespace" => "Admin"], function () {
         Route::resource("machines", "MachineController");
 
         Route::get("materials/grid", "MaterialController@grid")->name("materials.grid");
+        Route::get("materials/{material}/gallery", "MaterialController@gallery")->name("materials.gallery");
+        Route::post("materials/{material}/gallery", "MaterialController@addGallery")->name("materials.save-gallery");
         Route::resource("materials", "MaterialController");
 
         Route::get("supplies/grid", "SupplyController@grid")->name("supplies.grid");

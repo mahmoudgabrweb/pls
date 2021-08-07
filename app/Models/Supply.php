@@ -15,4 +15,9 @@ class Supply extends Model
     {
         return $this->belongsTo(Scategory::class);
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, "country_code", "code");
+    }
 }
