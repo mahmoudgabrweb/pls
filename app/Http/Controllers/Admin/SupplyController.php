@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use App\Models\Scategory;
 use App\Models\Supply;
 use Illuminate\Http\Request;
@@ -41,7 +42,11 @@ class SupplyController extends Controller
             ->addColumn("actions", function ($record) {
                 $edit_link = route("supplies.edit", [$record->id]);
                 $delete_link = route("supplies.destroy", [$record->id]);
-                $actions = "<a href='$edit_link' class='badge bg-warning'>تعديل</a>";
+                $gallery_link = route("supplies.gallery", [$record->id]);
+                $view_link = route("supplies.show", [$record->id]);
+                $actions = "<a href='$gallery_link' class='badge bg-success'>المعرض</a> ";
+                $actions .= "<a href='$view_link' class='badge bg-info'>عرض</a> ";
+                $actions .= "<a href='$edit_link' class='badge bg-warning'>تعديل</a>";
                 $actions .= " <a href='$delete_link' class='badge bg-danger delete-record'>حذف</a>";
                 return $actions;
             })
@@ -56,8 +61,8 @@ class SupplyController extends Controller
     public function create()
     {
         $categories = Scategory::get();
-
-        return view("admin.supplies.create", compact("categories"));
+        $countries = \DB::table("countries")->pluck("name_ar", "code")->toArray();
+        return view("admin.supplies.create", compact("categories", "countries"));
     }
 
     /**
@@ -78,7 +83,8 @@ class SupplyController extends Controller
             "type" => "required",
             "scategory_id" => "required",
             "description_en" => "required",
-            "description_ar" => "required"
+            "description_ar" => "required",
+            "country_code" => "required",
         ]);
 
         $image = $request->file("image")->store("supplies");
@@ -95,6 +101,9 @@ class SupplyController extends Controller
             "user_id" => auth()->user()->id,
             "description_en" => $request->description_en,
             "description_ar" => $request->description_ar,
+            "country_code" => $request->country_code,
+            "machine_power" => $request->machine_power,
+            "production_date" => $request->production_date,
             "is_active" => 1
         ]);
 
@@ -110,8 +119,8 @@ class SupplyController extends Controller
     public function edit(Supply $supply)
     {
         $categories = Scategory::get();
-
-        return view("admin.supplies.edit", compact("supply", "categories"));
+        $countries = \DB::table("countries")->pluck("name_ar", "code")->toArray();
+        return view("admin.supplies.edit", compact("supply", "categories", "countries"));
     }
 
     /**
@@ -132,7 +141,8 @@ class SupplyController extends Controller
             "type" => "required",
             "scategory_id" => "required",
             "description_en" => "required",
-            "description_ar" => "required"
+            "description_ar" => "required",
+            "country_code" => "required",
         ]);
 
         $updated_data = [
@@ -145,6 +155,9 @@ class SupplyController extends Controller
             "scategory_id" => $request->scategory_id,
             "description_en" => $request->description_en,
             "description_ar" => $request->description_ar,
+            "country_code" => $request->country_code,
+            "machine_power" => $request->machine_power,
+            "production_date" => $request->production_date,
             "is_active" => (isset($request->is_active)) ? 1 : 0
         ];
 
@@ -168,5 +181,33 @@ class SupplyController extends Controller
     {
         $supply->delete();
         return redirect(route("supplies.index"))->with("success_message", "Supply has been deleted successfully.");
+    }
+
+    public function show(Supply $supply)
+    {
+        $details = $supply->with("scategory", "country", "user")->first();
+        return view("admin.supplies.show", compact("details"));
+    }
+
+    public function gallery(Supply $supply)
+    {
+        return view("admin.supplies.gallery", compact("supply"));
+    }
+
+    public function addGallery(Request $request, Supply $supply)
+    {
+        $this->validate($request, [
+            "image" => "required",
+        ]);
+
+        $image = $request->file("image")->store("gallery");
+
+        Gallery::create([
+            "image" => $image,
+            "reference_type" => "App\Models\Supply",
+            "reference_id" => $supply->id
+        ]);
+
+        return redirect(url("admin/supplies/$supply->id/gallery"));
     }
 }

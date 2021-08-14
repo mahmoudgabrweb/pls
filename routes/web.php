@@ -51,6 +51,8 @@ Route::group(['prefix' => "admin", "namespace" => "Admin"], function () {
         });
 
         Route::get("machines/grid", "MachineController@grid")->name("machines.grid");
+        Route::get("machines/{machine}/gallery", "MachineController@gallery")->name("machines.gallery");
+        Route::post("machines/{machine}/gallery", "MachineController@addGallery")->name("machines.save-gallery");
         Route::resource("machines", "MachineController");
 
         Route::get("materials/grid", "MaterialController@grid")->name("materials.grid");
@@ -59,12 +61,18 @@ Route::group(['prefix' => "admin", "namespace" => "Admin"], function () {
         Route::resource("materials", "MaterialController");
 
         Route::get("supplies/grid", "SupplyController@grid")->name("supplies.grid");
+        Route::get("supplies/{supply}/gallery", "SupplyController@gallery")->name("supplies.gallery");
+        Route::post("supplies/{supply}/gallery", "SupplyController@addGallery")->name("supplies.save-gallery");
         Route::resource("supplies", "SupplyController");
     });
 });
 
 Route::group(['namespace' => "Front"], function () {
     Route::get("/", "HomeController@index");
+
+    Route::get("machines/{slug}", "MachineController@show");
+
+    Route::get("supplies/{slug}", "SupplyController@show");
 
     Route::get("materials", "MaterialController@index");
     Route::get("materials/{slug}", "MaterialController@show");

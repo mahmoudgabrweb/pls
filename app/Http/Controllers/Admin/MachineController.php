@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use App\Models\Machine;
 use App\Models\Mcategory;
 use Illuminate\Http\Request;
@@ -40,10 +41,12 @@ class MachineController extends Controller
                 return "<img width='40' height='40' src='$image' />";
             })
             ->addColumn("actions", function ($record) {
-                $view_link = route("machines.show", [$record->id]);
                 $edit_link = route("machines.edit", [$record->id]);
                 $delete_link = route("machines.destroy", [$record->id]);
-                $actions = "<a href='$view_link' class='badge bg-info'>عرض</a>";
+                $gallery_link = route("machines.gallery", [$record->id]);
+                $view_link = route("machines.show", [$record->id]);
+                $actions = "<a href='$gallery_link' class='badge bg-success'>المعرض</a> ";
+                $actions .= "<a href='$view_link' class='badge bg-info'>عرض</a> ";
                 $actions .= "<a href='$edit_link' class='badge bg-warning'>تعديل</a>";
                 $actions .= " <a href='$delete_link' class='badge bg-danger delete-record'>حذف</a>";
                 return $actions;
@@ -108,12 +111,6 @@ class MachineController extends Controller
         return redirect(route("machines.index"))->with("success_message", "Machine has been stored successfully.");
     }
 
-    public function show(Machine $machine)
-    {
-        
-        return view("admin.machines.show", compact("machine"));
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -145,7 +142,8 @@ class MachineController extends Controller
             "type" => "required",
             "mcategory_id" => "required",
             "description_en" => "required",
-            "description_ar" => "required"
+            "description_ar" => "required",
+            "country_code" => "required"
         ]);
 
         $updated_data = [
@@ -158,6 +156,9 @@ class MachineController extends Controller
             "mcategory_id" => $request->mcategory_id,
             "description_en" => $request->description_en,
             "description_ar" => $request->description_ar,
+            "country_code" => $request->country_code,
+            "production_date" => $request->production_date,
+            "machine_power" => $request->machine_power,
             "is_active" => (isset($request->is_active)) ? 1 : 0
         ];
 
@@ -181,5 +182,33 @@ class MachineController extends Controller
     {
         $machine->delete();
         return redirect(route("machines.index"))->with("success_message", "Product deleted successfully successfully.");
+    }
+
+    public function show(Machine $machine)
+    {
+        $details = $machine->with("mcategory", "country", "user")->first();
+        return view("admin.machines.show", compact("details"));
+    }
+
+    public function gallery(Machine $machine)
+    {
+        return view("admin.machines.gallery", compact("machine"));
+    }
+
+    public function addGallery(Request $request, Machine $machine)
+    {
+        $this->validate($request, [
+            "image" => "required",
+        ]);
+
+        $image = $request->file("image")->store("gallery");
+
+        Gallery::create([
+            "image" => $image,
+            "reference_type" => "App\Models\Machine",
+            "reference_id" => $machine->id
+        ]);
+
+        return redirect(url("admin/machines/$machine->id/gallery"));
     }
 }

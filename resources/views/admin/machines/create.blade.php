@@ -17,10 +17,6 @@
                     <div class="col-md-12">
                         <!-- jquery validation -->
                         <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Add new machine</h3>
-                            </div>
-                            <!-- /.card-header -->
                             <!-- form start -->
                             @if(count($errors))
                                 <div class="alert alert-danger">

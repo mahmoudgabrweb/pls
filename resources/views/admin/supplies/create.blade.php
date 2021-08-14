@@ -17,9 +17,6 @@
                     <div class="col-md-12">
                         <!-- jquery validation -->
                         <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Add new supply</h3>
-                            </div>
                             <!-- /.card-header -->
                             <!-- form start -->
                             @if(count($errors))
@@ -47,6 +44,15 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
+                                            <label for="">دولة المنشأ</label>
+                                            <select name="country_code" class="form-control">
+                                                <option value="">اختر الدولة</option>
+                                                @foreach ($countries as $code => $name)
+                                                    <option value="{{ $code }}">{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="exampleInputEmail1">Name (EN)</label>
                                             <input type="text" name="name_en" class="form-control" placeholder="{{ __("variables.Enter") }} name (en)" />
                                         </div>
@@ -57,6 +63,14 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Price</label>
                                             <input type="text" name="price" class="form-control" placeholder="{{ __("variables.Enter") }} price" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">كفاءة الماكينة</label>
+                                            <input type="text" name="machine_power" class="form-control" placeholder="" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">تاريخ الانتاج</label>
+                                            <input type="text" name="production_date" class="form-control" placeholder="{{ __("variables.Enter") }} price" />
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Image</label>

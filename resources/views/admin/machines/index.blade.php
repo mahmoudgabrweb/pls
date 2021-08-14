@@ -18,7 +18,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    View all machines
                                     <a class="btn btn-info btn-sm text-right" href="{{ route('machines.create') }}">+ Add New</a>
                                 </h3>
                             </div>

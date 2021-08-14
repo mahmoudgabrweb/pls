@@ -104,18 +104,23 @@
                                         </li>
                                         <li class="ttm-pf-details-date">
                                             <i class="ti ti-timer"></i>
-                                            <span class="ttm-pf-left-details">النوع</span>
-                                            <span class="ttm-pf-right-details">{{ $details->type->name_ar }}</span>
-                                        </li>
-                                        <li class="ttm-pf-details-date">
-                                            <i class="ti ti-timer"></i>
                                             <span class="ttm-pf-left-details">التصنيف</span>
-                                            <span class="ttm-pf-right-details">{{ $details->rcategory->name_ar }}</span>
+                                            <span class="ttm-pf-right-details">{{ $details->mcategory->name_ar }}</span>
                                         </li>
                                         <li class="ttm-pf-details-date">
                                             <i class="ti ti-timer"></i>
                                             <span class="ttm-pf-left-details">السعر</span>
                                             <span class="ttm-pf-right-details">{{ $details->price }}</span>
+                                        </li>
+                                        <li class="ttm-pf-details-date">
+                                            <i class="ti ti-timer"></i>
+                                            <span class="ttm-pf-left-details">قدرة الماكينة</span>
+                                            <span class="ttm-pf-right-details">{{ $details->machine_power }}</span>
+                                        </li>
+                                        <li class="ttm-pf-details-date">
+                                            <i class="ti ti-timer"></i>
+                                            <span class="ttm-pf-left-details">تاريخ الإنتاج</span>
+                                            <span class="ttm-pf-right-details">{{ $details->production_date }}</span>
                                         </li>
                                     </ul>
                                 </div>
